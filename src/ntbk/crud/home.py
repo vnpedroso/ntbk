@@ -1,4 +1,3 @@
-from pathlib import Path
 
 from ntbk.utils.constants import NTBK_HOME
 
