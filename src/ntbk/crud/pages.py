@@ -13,3 +13,4 @@ def ensure_ntbk_page(pg_name: str) -> None:
     if not pg.exists():
         pg.mkdir(parents=True, exist_ok=True)
         pg.touch()
+
