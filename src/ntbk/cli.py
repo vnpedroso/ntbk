@@ -19,10 +19,10 @@ def new(ctx, page, note):
     """Create a new notebook page or note"""
     
     if not (page or note):
-        click.secho("You must specify either a page or a note.", fg="red", bold=True)
+        click.secho("You must specify both a page and a note.", fg="red", bold=True)
         return
     
-    if page:
+    if page and note:
         ensure_ntbk_page(page)
 
 
