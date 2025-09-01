@@ -10,19 +10,26 @@ def ntbk(ctx):
     ensure_ntbk_home()
     ctx.ensure_object(dict)
 
-
-@ntbk.command()
+@ntbk.group
 @click.pass_context
-@click.option("--page", type=str , help="Create a new notebook page",)
-@click.option("--note", type=str, help="Create a new note in the notebook page")
-def new(ctx, page, note):
-    """Create a new notebook page or note"""
-    
-    if not (page or note):
-        click.secho("You must specify both a page and a note.", fg="red", bold=True)
-        return
-    
-    if page and note:
-        ensure_ntbk_page(page)
+def new(ctx):
+    """
+    ntbk new page --> creates a new PAGE\n
+    ntbk new note --> creates a new NOTE
+    """
+    pass
+
+@new.command
+@click.pass_context
+@click.argument("page_name")
+def page(ctx, page_name):
+    """ntbk new page <page_name> --> creates new page with name <page_name>"""
+    ensure_ntbk_page(page_name)
+    click.secho(f'page "{page_name}" successfully created', fg="green", bold=True)
+
+@new.command
+@click.pass_context
+def note(ctx):
+    pass
 
 
