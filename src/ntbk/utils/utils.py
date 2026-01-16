@@ -1,5 +1,22 @@
+
+from pathlib import Path
 from rich.console import Console
-from rich.table import Table   
+from rich.table import Table
+
+from ntbk.utils.constants import NTBK_HOME
+
+def build_ntbk_path(fname: str) -> Path:
+    """generates the full path to the file
+
+    Args:
+        fname (str): the name of the file
+
+    Returns:
+        Path: the Path object of the page
+    """
+
+    fname = treat_input(fname)
+    return Path.home() / NTBK_HOME / f"{fname}.txt"
 
 def treat_input(text: str) -> str:
     """
