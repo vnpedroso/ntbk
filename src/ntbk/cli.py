@@ -1,6 +1,7 @@
 import click
 
 from ntbk.utils.constants import NTBK_HOME
+from ntbk.utils.utils import build_ntbk_path
 
 from ntbk.crud.bookmark import ensure_bookmark, read_bookmark, write_bookmark
 from ntbk.crud.home import ensure_ntbk_home
@@ -38,14 +39,28 @@ def page(ctx: click.Context, page_name):
 @click.pass_context
 @click.option("--page", help="name of the page on which to the note")
 def note(ctx: click.Context, page):
+    """
+    ntbk new note:                   creates a note in the bookmarked page
+    ntbk new note --page <dummy>:    creates a note in the dummy page
+    """
 
     bmk = ctx.obj["bookmark"]
     
-    if not(page and bmk):
+    if not(page or bmk):
         click.secho("must create at least one page before creating notes!\n", bold=True, fg="red")
         raise click.UsageError("No page found")
     
-    if not page:
+    fpage = build_ntbk_path(page) if page else build_ntbk_path(bmk) 
+
+    click.echo("Press ENTER to save note\n")
+
+    note = click.prompt("",prompt_suffix=">> ")
+
+    if fpage.read_text():
+        with open(fpage, mode="a") as f:
+            f.write("\n"+note)
         return
+        
+    fpage.write_text(note)
     
-    
+        
