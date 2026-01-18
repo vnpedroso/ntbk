@@ -15,4 +15,15 @@ def ensure_ntbk_page(pg_name: str) -> None:
     if not pg.exists():
         pg.touch()
 
+def is_page_blank(fpage: Path) -> bool:
+    """checks if the note's page is blank
 
+    Args:
+        fpage (Path): full path to page
+
+    Returns:
+        bool: True if the page is blank, or false if not
+    """
+    with open(fpage, mode="r") as f:
+        first_char = f.read(1)
+    return False if first_char else True
