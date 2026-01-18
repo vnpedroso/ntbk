@@ -25,5 +25,6 @@ def is_page_blank(fpage: Path) -> bool:
         bool: True if the page is blank, or false if not
     """
     with open(fpage, mode="r") as f:
-        first_char = f.read(1)
+        first_char = f.read(3)
+        
     return False if first_char else True

@@ -1,11 +1,16 @@
 import click
 
-from ntbk.utils.constants import NTBK_HOME
+from ntbk.utils.constants import NTBK_HOME, SEPARATOR
 from ntbk.utils.utils import build_ntbk_path
 
 from ntbk.crud.bookmark import ensure_bookmark, read_bookmark, write_bookmark
 from ntbk.crud.home import ensure_ntbk_home
-from ntbk.crud.notes import is_within_char_limit, write_note
+from ntbk.crud.notes import (
+    is_within_char_limit, 
+    write_note, 
+    get_last_note_id,
+    format_content
+)
 from ntbk.crud.pages import ensure_ntbk_page, is_page_blank
 
 @click.group()
@@ -21,7 +26,7 @@ def ntbk(ctx: click.Context):
 @click.pass_context
 def new(ctx: click.Context):
     """
-    ntbk new page:  creates a new page\n
+    ntbk new page:  creates a new page
     ntbk new note:  creates a new note
     """
     return
@@ -51,18 +56,31 @@ def note(ctx: click.Context, page):
         click.secho("no page found\n", bold=True, fg="red")
         raise click.UsageError("must create at least one page before creating notes!") 
     
-    fpage = build_ntbk_path(page) if page else build_ntbk_path(bmk) 
+    if page:
+         fpage = build_ntbk_path(page)
+         write_bookmark(page)
+    else:
+        fpage = build_ntbk_path(bmk)
+
+    note_id = 0 if is_page_blank(fpage) else get_last_note_id(fpage, SEPARATOR) + 1
 
     click.echo("Press ENTER to save note\n")
 
-    note = click.prompt("",prompt_suffix=">> ")
-    if not is_within_char_limit(note):
+    content = click.prompt("",prompt_suffix=">> ")
+    if not is_within_char_limit(content):
         click.secho("144 character limit exceeded!\n", bold=True, fg="red")
-        raise click.UsageError(f"current note has {len(note)} characters, limit is 144")
+        raise click.UsageError(f"current note has {len(content)} characters, limit is 144")
+
+    note = format_content(
+        content=content,
+        note_id=note_id,
+        sep=SEPARATOR,
+    )
 
     write_note(
         note=note,
-        append=is_page_blank(fpage),
-        fpage=fpage
+        overwrite=is_page_blank(fpage),
+        fpage=fpage,
     )
-        
+
+
