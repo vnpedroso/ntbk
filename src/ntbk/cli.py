@@ -5,7 +5,8 @@ from ntbk.utils.utils import build_ntbk_path
 
 from ntbk.crud.bookmark import ensure_bookmark, read_bookmark, write_bookmark
 from ntbk.crud.home import ensure_ntbk_home
-from ntbk.crud.pages import ensure_ntbk_page
+from ntbk.crud.notes import is_within_char_limit, write_note
+from ntbk.crud.pages import ensure_ntbk_page, is_page_blank
 
 @click.group()
 @click.pass_context
@@ -47,20 +48,21 @@ def note(ctx: click.Context, page):
     bmk = ctx.obj["bookmark"]
     
     if not(page or bmk):
-        click.secho("must create at least one page before creating notes!\n", bold=True, fg="red")
-        raise click.UsageError("No page found")
+        click.secho("no page found\n", bold=True, fg="red")
+        raise click.UsageError("must create at least one page before creating notes!") 
     
     fpage = build_ntbk_path(page) if page else build_ntbk_path(bmk) 
 
     click.echo("Press ENTER to save note\n")
 
     note = click.prompt("",prompt_suffix=">> ")
+    if not is_within_char_limit(note):
+        click.secho("144 character limit exceeded!\n", bold=True, fg="red")
+        raise click.UsageError(f"current note has {len(note)} characters, limit is 144")
 
-    if fpage.read_text():
-        with open(fpage, mode="a") as f:
-            f.write("\n"+note)
-        return
-        
-    fpage.write_text(note)
-    
+    write_note(
+        note=note,
+        append=is_page_blank(fpage),
+        fpage=fpage
+    )
         
