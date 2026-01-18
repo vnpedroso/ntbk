@@ -33,20 +33,21 @@ def treat_input(text: str) -> str:
     return '_'.join(text.strip().split()).lower()
 
 
-def tabulate(title: str, headers: list[str], rows: list[list]) -> None:
+def tabulate(title: str, headers: list[str], rows: list[list[str]]) -> None:
     """
     Prints a cool table with the inputted data
 
     Args:
         title (str): the title of the table
         headers (list[str]): a list containing the columns titles
-        rows (list[list]): a list with all the data points of the table, each a list on its own
+        rows (list[list[str]]): a list with all the data points of the table, each a list on its own
     """
 
     table = Table(title=title)
 
-    for idx in range(1,len(headers)):
-        assert len(rows[idx]) == len(rows[idx - 1]), f"row {idx} and {idx - 1} have different lengths!"
+    if len(rows) > 1:
+        for idx in range(1,len(headers)):
+            assert len(rows[idx]) == len(rows[idx - 1]), f"row {idx} and {idx - 1} have different lengths!"
 
     assert len(headers) == len(rows[0]), "column titles and rows are not matching"
 
