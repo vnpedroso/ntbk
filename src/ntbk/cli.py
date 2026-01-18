@@ -11,7 +11,7 @@ from ntbk.crud.notes import (
     get_last_note_id,
     format_content
 )
-from ntbk.crud.pages import ensure_ntbk_page, is_page_blank
+from ntbk.crud.pages import ensure_ntbk_page, is_page_blank, read_page
 
 @click.group()
 @click.pass_context
@@ -43,7 +43,7 @@ def page(ctx: click.Context, page_name):
 
 @new.command
 @click.pass_context
-@click.option("--page", help="name of the page on which to the note")
+@click.option("--page", help="name of the page on which to write the note, if empty will use bookmarked page")
 def note(ctx: click.Context, page):
     """
     ntbk new note:                   creates a note in the bookmarked page
@@ -83,4 +83,25 @@ def note(ctx: click.Context, page):
         fpage=fpage,
     )
 
+@ntbk.command
+@click.pass_context
+@click.option("--page", help="name of the page to read, if empty will use bookmarked page")
+def read(ctx: click.Context, page):
+    """read all notes in the specified page, uses bookmark if no page is provided"""
+    
+    bmk = ctx.obj["bookmark"]
+    if page:
+        fpage = build_ntbk_path(page)
+    else:
+        fpage = build_ntbk_path(bmk)
+        page = read_bookmark()
+
+    if not(is_page_blank(fpage)):
+        read_page(
+            fpage=fpage,
+            page_name=page
+        )
+        return
+    
+    click.secho(f"\nwhoops, {page} is a blank page",fg="yellow",bold="True")
 
