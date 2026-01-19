@@ -46,9 +46,8 @@ def tabulate(title: str, headers: list[str], rows: list[list[str]]) -> None:
 
     table = Table(title=title)
 
-    if len(rows) > 1:
-        for idx in range(1,len(headers)):
-            assert len(rows[idx]) == len(rows[idx - 1]), f"row {idx} and {idx - 1} have different lengths!"
+    for row in rows:
+        assert len(row) == len(headers), "headers and all content rows must have same length!"
 
     assert len(headers) == len(rows[0]), "column titles and rows are not matching"
 

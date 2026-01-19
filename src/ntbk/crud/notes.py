@@ -1,7 +1,7 @@
 from datetime import datetime
 from pathlib import Path
 
-from ntbk.utils.constants import SEPARATOR, TIMESTAMP_FMT
+from ntbk.utils.constants import TIMESTAMP_FMT
 
 def is_within_char_limit(content: str) -> bool:
     """checks if note is complying to 144 char limit
