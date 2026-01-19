@@ -78,6 +78,15 @@ def is_page_blank(fpage: Path) -> bool:
 
 
 def page_into_content_rows(fpage: Path) -> list[list[str]]:
+    """
+    reads a page file into a 'rows' of content
+
+    Args:
+        fpage (Path): full path to the page file
+
+    Returns:
+        list[list[str]]: the content 'rows'
+    """
 
     rows = []
 
