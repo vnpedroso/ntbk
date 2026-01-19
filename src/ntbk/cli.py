@@ -1,7 +1,7 @@
 import click
 
-from ntbk.utils.constants import NTBK_HOME, SEPARATOR
-from ntbk.utils.utils import build_ntbk_path
+from ntbk.utils.constants import HEADERS, NTBK_HOME, SEPARATOR
+from ntbk.utils.utils import build_ntbk_path, is_page_blank
 
 from ntbk.crud.bookmark import ensure_bookmark, read_bookmark, write_bookmark
 from ntbk.crud.home import ensure_ntbk_home
@@ -11,7 +11,7 @@ from ntbk.crud.notes import (
     get_last_note_id,
     format_content
 )
-from ntbk.crud.pages import ensure_ntbk_page, is_page_blank, read_page
+from ntbk.crud.pages import ensure_ntbk_page, read_page
 
 @click.group()
 @click.pass_context
@@ -99,7 +99,8 @@ def read(ctx: click.Context, page):
     if not(is_page_blank(fpage)):
         read_page(
             fpage=fpage,
-            page_name=page
+            page_name=page,
+            headers=HEADERS,
         )
         return
     

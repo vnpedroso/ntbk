@@ -1,7 +1,7 @@
 from pathlib import Path
 
-from ntbk.utils.constants import NTBK_HOME, SEPARATOR
-from ntbk.utils.utils import treat_input, build_ntbk_path, tabulate
+from ntbk.utils.constants import HEADERS, NTBK_HOME, SEPARATOR
+from ntbk.utils.utils import treat_input, build_ntbk_path, page_into_content_rows, tabulate
 
 def ensure_ntbk_page(pg_name: str) -> None:
     """creates notebook page if it does not exist
@@ -15,22 +15,8 @@ def ensure_ntbk_page(pg_name: str) -> None:
     if not pg.exists():
         pg.touch()
 
-def is_page_blank(fpage: Path) -> bool:
-    """checks if the note's page is blank
 
-    Args:
-        fpage (Path): full path to page
-
-    Returns:
-        bool: True if the page is blank, or false if not
-    """
-    with open(fpage, mode="r") as f:
-        first_char = f.read(3)
-
-    return False if first_char else True
-
-
-def read_page(fpage: Path, page_name: str) -> None:
+def read_page(fpage: Path, page_name: str, headers: list[str]) -> None:
     """displays all notes in a page
 
     Args:
@@ -38,13 +24,7 @@ def read_page(fpage: Path, page_name: str) -> None:
         page_name (str): the page name
     """
 
-    headers = ["id","created_at","content"]
-    rows = []
-
-    with open(fpage, mode="r") as f:
-        for line in f:
-            row = line.strip("\n").split(SEPARATOR)
-            rows.append(row)
+    rows = page_into_content_rows(fpage)
 
     tabulate(
         title=page_name,
