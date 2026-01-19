@@ -3,10 +3,11 @@ from pathlib import Path
 from rich.console import Console
 from rich.table import Table
 
-from ntbk.utils.constants import NTBK_HOME
+from ntbk.utils.constants import NTBK_HOME, SEPARATOR
 
 def build_ntbk_path(fname: str) -> Path:
-    """generates the full path to the file
+    """
+    generates the full path to the file
 
     Args:
         fname (str): the name of the file
@@ -61,7 +62,32 @@ def tabulate(title: str, headers: list[str], rows: list[list[str]]) -> None:
     console.print(table)
 
 
-    
+def is_page_blank(fpage: Path) -> bool:
+    """
+    checks if the note's page is blank
+
+    Args:
+        fpage (Path): full path to page
+
+    Returns:
+        bool: True if the page is blank, or false if not
+    """
+    with open(fpage, mode="r") as f:
+        first_char = f.read(3)
+
+    return False if first_char else True
+
+
+def page_into_content_rows(fpage: Path) -> list[list[str]]:
+
+    rows = []
+
+    with open(fpage, mode="r") as f:
+        for line in f:
+            row = line.strip("\n").split(SEPARATOR)
+            rows.append(row)
+
+    return rows
 
 
 
