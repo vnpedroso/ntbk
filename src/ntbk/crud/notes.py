@@ -1,7 +1,8 @@
 from datetime import datetime
+from filelock import FileLock
 from pathlib import Path
 
-from ntbk.utils.constants import TIMESTAMP_FMT
+from ntbk.utils.constants import FILELOCK, TIMESTAMP_FMT
 
 def is_within_char_limit(content: str) -> bool:
     """checks if note is complying to 144 char limit
@@ -25,14 +26,15 @@ def write_note(note: str, overwrite: bool, fpage: Path) -> None:
         fpage (Path): full page to the note's page
     """
 
-    if overwrite:
-        with open(fpage, mode="w") as f:
-            f.write(note)
+    with FileLock(FILELOCK):
+        if overwrite:
+            with open(fpage, mode="w") as f:
+                f.write(note)
+                return
+            
+        with open(fpage, mode="a") as f:
+            f.write("\n" + note)
             return
-        
-    with open(fpage, mode="a") as f:
-        f.write("\n" + note)
-        return
 
 
 
@@ -48,10 +50,11 @@ def get_last_note_id(fpage: Path, sep: str) -> int:
         int: integer value of the note id
     """
 
-    with open(fpage, mode="r") as f:
-        for line in f:
-            pass
-        last_line = line
+    with FileLock(FILELOCK):
+        with open(fpage, mode="r") as f:
+            for line in f:
+                pass
+            last_line = line
 
     note_id = int(last_line.split(sep)[0])
     return note_id
