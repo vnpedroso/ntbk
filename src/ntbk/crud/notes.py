@@ -4,18 +4,6 @@ from pathlib import Path
 
 from ntbk.utils.constants import FILELOCK, TIMESTAMP_FMT
 
-def is_within_char_limit(content: str) -> bool:
-    """checks if note is complying to 144 char limit
-
-    Args:
-        content (str): content of the note to be written
-
-    Returns:
-        bool: True if note is within 144 char limit, else False
-    """
-
-    return False if len(content) > 144 else True
-
 
 def write_note(note: str, overwrite: bool, fpage: Path) -> None:
     """writes note in its respective page
@@ -37,8 +25,6 @@ def write_note(note: str, overwrite: bool, fpage: Path) -> None:
             return
 
 
-
-
 def get_last_note_id(fpage: Path, sep: str) -> int:
     """retrieves the id of the last note in page
 
@@ -58,6 +44,17 @@ def get_last_note_id(fpage: Path, sep: str) -> int:
 
     note_id = int(last_line.split(sep)[0])
     return note_id
+
+def is_within_id_limit(note_id: int, max_notes_on_page: int) -> bool:
+    """checks if NEXT note will violate the max note limit per page
+
+    Args:
+        note_id (int): id of the last note on the page
+
+    Returns:
+        bool: False if limit is violated, otherwise True
+    """
+    return True if note_id + 1 < max_notes_on_page else False
     
 
 def format_content(content: str, note_id: int, sep: str) -> str:

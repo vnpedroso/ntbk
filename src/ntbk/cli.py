@@ -1,12 +1,12 @@
 import click
 
-from ntbk.utils.constants import HEADERS, NTBK_HOME, SEPARATOR
-from ntbk.utils.utils import build_ntbk_path, is_page_blank
+from ntbk.utils.constants import HEADERS, NTBK_HOME, PAGE_MAX_NOTES, SEPARATOR
+from ntbk.utils.utils import build_ntbk_path, is_page_blank, is_within_char_limit
 
 from ntbk.crud.bookmark import ensure_bookmark, read_bookmark, write_bookmark
 from ntbk.crud.home import ensure_ntbk_home
 from ntbk.crud.notes import (
-    is_within_char_limit, 
+    is_within_id_limit, 
     write_note, 
     get_last_note_id,
     format_content
@@ -63,6 +63,10 @@ def note(ctx: click.Context, page):
         fpage = build_ntbk_path(bmk)
 
     note_id = 0 if is_page_blank(fpage) else get_last_note_id(fpage, SEPARATOR) + 1
+
+    if not is_within_id_limit(note_id,max_notes_on_page=PAGE_MAX_NOTES):
+        click.secho(f"max number of notes reached!")
+        raise click.ClickException(f"page {page} reached max number of {PAGE_MAX_NOTES} notes!")
 
     click.echo("Press ENTER to save note\n")
 

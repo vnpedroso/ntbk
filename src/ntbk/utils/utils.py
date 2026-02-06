@@ -62,6 +62,19 @@ def tabulate(title: str, headers: list[str], rows: list[list[str]]) -> None:
     console.print(table)
 
 
+def is_within_char_limit(content: str) -> bool:
+    """checks if note is complying to 144 char limit
+
+    Args:
+        content (str): content of the note to be written
+
+    Returns:
+        bool: True if note is within 144 char limit, else False
+    """
+
+    return False if len(content) > 144 else True
+
+
 def is_page_blank(fpage: Path) -> bool:
     """
     checks if the note's page is blank
