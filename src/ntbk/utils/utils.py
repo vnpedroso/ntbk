@@ -1,9 +1,10 @@
 
+from filelock import FileLock
 from pathlib import Path
 from rich.console import Console
 from rich.table import Table
 
-from ntbk.utils.constants import NTBK_HOME, SEPARATOR
+from ntbk.utils.constants import FILELOCK, NTBK_HOME, SEPARATOR
 
 def build_ntbk_path(fname: str) -> Path:
     """
@@ -71,8 +72,10 @@ def is_page_blank(fpage: Path) -> bool:
     Returns:
         bool: True if the page is blank, or false if not
     """
-    with open(fpage, mode="r") as f:
-        first_char = f.read(3)
+
+    with FileLock(FILELOCK):
+        with open(fpage, mode="r") as f:
+            first_char = f.read(3)
 
     return False if first_char else True
 
@@ -90,10 +93,11 @@ def page_into_content_rows(fpage: Path) -> list[list[str]]:
 
     rows = []
 
-    with open(fpage, mode="r") as f:
-        for line in f:
-            row = line.strip("\n").split(SEPARATOR)
-            rows.append(row)
+    with FileLock(FILELOCK):
+        with open(fpage, mode="r") as f:
+            for line in f:
+                row = line.strip("\n").split(SEPARATOR)
+                rows.append(row)
 
     return rows
 
