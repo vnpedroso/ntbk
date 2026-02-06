@@ -11,7 +11,7 @@ from ntbk.crud.notes import (
     get_last_note_id,
     format_content
 )
-from ntbk.crud.pages import ensure_ntbk_page, read_page
+from ntbk.crud.pages import ensure_ntbk_page, read_page, list_pages
 
 @click.group()
 @click.pass_context
@@ -108,5 +108,23 @@ def read(ctx: click.Context, page):
         )
         return
     
-    click.secho(f"\nwhoops, {page} is a blank page",fg="yellow",bold="True")
+    click.secho(f"\nwhoops, {page} is a blank page",fg="yellow",bold=True)
+
+@ntbk.command
+@click.pass_context
+def summary(ctx: click.Context):
+    """shows all pages, highlights the bookmarked page"""
+    bmk = ctx.obj["bookmark"]
+    pages = list_pages(NTBK_HOME)
+    marker = "  "
+    if pages:
+        click.echo()
+        for pg in pages:
+            if pg == bmk:
+                pg = click.style(pg,bold=True)
+                marker = "* "
+            click.echo(f"\t{marker}{pg}")
+            marker = "  "
+    else:
+        click.secho("empty summary, no pages found", fg="yellow", bold=True)
 

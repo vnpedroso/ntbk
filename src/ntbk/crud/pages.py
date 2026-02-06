@@ -31,3 +31,12 @@ def read_page(fpage: Path, page_name: str, headers: list[str]) -> None:
         headers=headers,
         rows=rows
     )
+
+
+def list_pages(ntbk_home: Path) -> list[str]:
+    """Returns a list of all page files
+
+    Returns:
+        list[str]: a list of all '.txt' files within ntbk home dir
+    """
+    return [i.name.replace(".txt","") for i in list(ntbk_home.glob("*.txt"))]
