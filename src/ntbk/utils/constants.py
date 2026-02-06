@@ -5,4 +5,5 @@ BOOKMARK: Path = Path.home() / NTBK_HOME / "bookmark.txt"
 SEPARATOR: str = "::"
 TIMESTAMP_FMT: str = "%d/%m/%Y %H:%M"
 HEADERS: list[str] = ["id", "created_at", "content"]
+FILELOCK: str = "ntbk.lock"
 
