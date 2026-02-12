@@ -94,6 +94,11 @@ def read(ctx: click.Context, page):
     """read all notes in the specified page, uses bookmark if no page is provided"""
     
     bmk = ctx.obj["bookmark"]
+
+    if not(page and bmk):
+        click.secho("\npage not found!\n",fg="yellow",bold=True)
+        raise click.UsageError("cannot read notes if there are no pages created!")
+
     if page:
         fpage = build_ntbk_path(page)
     else:
@@ -128,3 +133,8 @@ def summary(ctx: click.Context):
     else:
         click.secho("empty summary, no pages found", fg="yellow", bold=True)
 
+
+# @ntbk.command
+# @click.pass_context
+# def edit(ctx: click.Context):
+#     """rewrites an specific note"""
