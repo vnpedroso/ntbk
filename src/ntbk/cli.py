@@ -97,7 +97,7 @@ def read(ctx: click.Context, page):
     
     bmk = ctx.obj["bookmark"]
 
-    if not(page and bmk):
+    if not(page or bmk):
         click.secho("\npage not found!",fg="yellow",bold=True)
         raise click.UsageError("cannot read notes if there are no pages created!")
 
