@@ -71,5 +71,5 @@ def format_content(content: str, note_id: int, sep: str) -> str:
     """
 
     timestp = datetime.now().strftime(TIMESTAMP_FMT)
-    note = f"{str(note_id)}{sep}{timestp}{sep}{content}"
+    note = f"{str(note_id)}{sep}{timestp}{sep}{timestp}{sep}{content}"
     return note

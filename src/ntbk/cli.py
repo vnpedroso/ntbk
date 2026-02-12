@@ -39,7 +39,8 @@ def page(ctx: click.Context, page_name):
 
     ensure_ntbk_page(page_name)
     write_bookmark(page_name)
-    click.secho(f'page "{page_name}" successfully created', fg="green", bold=True)
+    ctx.obj["bookmark"] = page_name
+    click.secho(f'\npage "{page_name}" successfully created', fg="green", bold=True)
 
 @new.command
 @click.pass_context
@@ -53,26 +54,27 @@ def note(ctx: click.Context, page):
     bmk = ctx.obj["bookmark"]
     
     if not(page or bmk):
-        click.secho("no page found\n", bold=True, fg="red")
+        click.secho("\nno page found", bold=True, fg="red")
         raise click.UsageError("must create at least one page before creating notes!") 
     
     if page:
          fpage = build_ntbk_path(page)
          write_bookmark(page)
+         ctx.obj["bookmark"] = page
     else:
         fpage = build_ntbk_path(bmk)
 
     note_id = 0 if is_page_blank(fpage) else get_last_note_id(fpage, SEPARATOR) + 1
 
     if not is_within_id_limit(note_id,max_notes_on_page=PAGE_MAX_NOTES):
-        click.secho(f"max number of notes reached!")
+        click.secho(f"\nmax number of notes reached!")
         raise click.ClickException(f"page {page} reached max number of {PAGE_MAX_NOTES} notes!")
 
     click.echo("Press ENTER to save note\n")
 
     content = click.prompt("",prompt_suffix=">> ")
     if not is_within_char_limit(content):
-        click.secho("144 character limit exceeded!\n", bold=True, fg="red")
+        click.secho("\n144 character limit exceeded!", bold=True, fg="red")
         raise click.UsageError(f"current note has {len(content)} characters, limit is 144")
 
     note = format_content(
@@ -89,14 +91,14 @@ def note(ctx: click.Context, page):
 
 @ntbk.command
 @click.pass_context
-@click.option("--page", help="name of the page to read, if empty will use bookmarked page")
+@click.argument("page", required=False)
 def read(ctx: click.Context, page):
     """read all notes in the specified page, uses bookmark if no page is provided"""
     
     bmk = ctx.obj["bookmark"]
 
     if not(page and bmk):
-        click.secho("\npage not found!\n",fg="yellow",bold=True)
+        click.secho("\npage not found!",fg="yellow",bold=True)
         raise click.UsageError("cannot read notes if there are no pages created!")
 
     if page:
@@ -131,7 +133,7 @@ def summary(ctx: click.Context):
             click.echo(f"\t{marker}{pg}")
             marker = "  "
     else:
-        click.secho("empty summary, no pages found", fg="yellow", bold=True)
+        click.secho("\nempty summary, no pages found", fg="yellow", bold=True)
 
 
 # @ntbk.command

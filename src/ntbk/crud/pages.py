@@ -1,7 +1,13 @@
 from pathlib import Path
 
 from ntbk.utils.constants import HEADERS, NTBK_HOME, SEPARATOR
-from ntbk.utils.utils import treat_input, build_ntbk_path, page_into_content_rows, tabulate
+from ntbk.utils.utils import (
+    treat_input,
+    build_ntbk_path,
+    page_into_content_rows,
+    tabulate,
+)
+
 
 def ensure_ntbk_page(pg_name: str) -> None:
     """creates notebook page if it does not exist
@@ -11,7 +17,7 @@ def ensure_ntbk_page(pg_name: str) -> None:
     """
 
     pg: Path = build_ntbk_path(pg_name)
-    
+
     if not pg.exists():
         pg.touch()
 
@@ -26,11 +32,7 @@ def read_page(fpage: Path, page_name: str, headers: list[str]) -> None:
 
     rows = page_into_content_rows(fpage)
 
-    tabulate(
-        title=page_name,
-        headers=headers,
-        rows=rows
-    )
+    tabulate(title=page_name, headers=headers, rows=rows)
 
 
 def list_pages(ntbk_home: Path) -> list[str]:
@@ -39,4 +41,8 @@ def list_pages(ntbk_home: Path) -> list[str]:
     Returns:
         list[str]: a list of all '.txt' files within ntbk home dir
     """
-    return [i.name.replace(".txt","") for i in list(ntbk_home.glob("*.txt"))]
+    return [
+        i.name.replace(".txt", "")
+        for i in list(ntbk_home.glob("*.txt"))
+        if i.name.replace(".txt", "") != "bookmark"
+    ]
