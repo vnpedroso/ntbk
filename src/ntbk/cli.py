@@ -136,5 +136,10 @@ def summary(ctx: click.Context):
 
 # @ntbk.command
 # @click.pass_context
-# def edit(ctx: click.Context):
+# def edit(ctx: click.Context, note_id: int):
 #     """rewrites an specific note"""
+
+# @ntbk.command
+# @click.pass_context
+# def erase(ctx: click.Context, note_id: int):
+#     """deletes an specific note"""
