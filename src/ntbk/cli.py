@@ -33,8 +33,8 @@ def new(ctx: click.Context):
 
 @new.command
 @click.pass_context
-@click.argument("page_name")
-def page(ctx: click.Context, page_name):
+@click.argument("page_name", nargs=1)
+def page(ctx: click.Context, page_name: str):
     """ntbk new page <dummy>:   creates a new page named <dummy>"""
 
     ensure_ntbk_page(page_name)
@@ -91,8 +91,8 @@ def note(ctx: click.Context, page):
 
 @ntbk.command
 @click.pass_context
-@click.argument("page", required=False)
-def read(ctx: click.Context, page):
+@click.argument("page", required=False, nargs=1)
+def read(ctx: click.Context, page: str):
     """read all notes in the specified page, uses bookmark if no page is provided"""
     
     bmk = ctx.obj["bookmark"]
