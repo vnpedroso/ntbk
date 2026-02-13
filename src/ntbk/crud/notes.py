@@ -2,8 +2,49 @@ from datetime import datetime
 from filelock import FileLock
 from pathlib import Path
 
-from ntbk.utils.constants import FILELOCK, TIMESTAMP_FMT
+from ntbk.utils.constants import FILELOCK, TIMESTAMP_FMT, SEPARATOR
 
+from ntbk.utils.utils import page_into_str_lines
+
+def check_id_match_index(note_id: int, lines: list[str]) -> bool:
+    """_summary_
+
+    Args:
+        note_id (int): _description_
+        liens (list[str]): _description_
+
+    Returns:
+        bool: _description_
+    """
+    if note_id <= len(lines):
+        if note_id == int(lines[note_id].split(SEPARATOR)[0]):
+            return True
+    
+    return False
+
+def delete_note_by_id(note_id: int, fpage: Path) -> None:
+    """_summary_
+
+    Args:
+        note_id (int): _description_
+        fpage (Path): _description_
+
+    Returns:
+        _type_: _description_
+    """
+
+    lines = page_into_str_lines(fpage)
+
+    if check_id_match_index(note_id,lines):
+        lines.pop(note_id)
+    else: 
+        raise IndexError(f"note id {note_id} has no equivalent row")
+    
+    with FileLock(FILELOCK):
+        with open(fpage, mode="w") as f:
+            for li in lines:
+                f.write(li)
+            return
 
 def write_note(note: str, overwrite: bool, fpage: Path) -> None:
     """writes note in its respective page

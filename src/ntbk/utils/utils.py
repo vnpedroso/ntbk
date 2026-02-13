@@ -95,7 +95,7 @@ def is_page_blank(fpage: Path) -> bool:
 
 def page_into_content_rows(fpage: Path) -> list[list[str]]:
     """
-    reads a page file into a 'rows' of content
+    reads a page file into 'rows' of content
 
     Args:
         fpage (Path): full path to the page file
@@ -114,5 +114,23 @@ def page_into_content_rows(fpage: Path) -> list[list[str]]:
 
     return rows
 
+def page_into_str_lines(fpage: Path) -> list[str]:
+    """
+    reads a page file into string lines
 
+    Args:
+        fpage (Path): full path to the page file
+
+    Returns:
+        list[str]: a list of str, each a line in the file
+    """
+
+    lines = []
+
+    with FileLock(FILELOCK):
+        with open(fpage, mode="r") as f:
+            for li in f:
+                lines.append(li)
+
+    return lines
 

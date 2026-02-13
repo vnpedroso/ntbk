@@ -46,3 +46,32 @@ def list_pages(ntbk_home: Path) -> list[str]:
         for i in list(ntbk_home.glob("*.txt"))
         if i.name.replace(".txt", "") != "bookmark"
     ]
+
+def empty_notebook(page: str, bmk_page: str) -> bool:
+    """checks if a single page was created in the notebook
+
+    Args:
+        page (str): name of the page, usually a provided arg or option
+        bmk_page (str): the current bookmarked page
+
+    Returns:
+        bool: True if the notebook is empty, False otherwise
+    """
+    return True if not (page or bmk_page) else False
+
+def input_page_or_bmk(page: str, bmk: str) -> tuple[str, Path]:
+    """checks if the program will use the inputed page or the bookmark page
+
+    Args:
+        page (str): inputed page by the user, if any
+        bmk (str): current bookmark page
+
+
+    Returns:
+        tuple[str, Path]: tuple made of the used page and its full path
+    """
+
+    if page:
+        return page, build_ntbk_path(page)
+    
+    return bmk, build_ntbk_path(bmk)

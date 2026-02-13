@@ -6,12 +6,19 @@ from ntbk.utils.utils import build_ntbk_path, is_page_blank, is_within_char_limi
 from ntbk.crud.bookmark import ensure_bookmark, read_bookmark, write_bookmark
 from ntbk.crud.home import ensure_ntbk_home
 from ntbk.crud.notes import (
-    is_within_id_limit, 
+    delete_note_by_id,
+    is_within_id_limit,
     write_note, 
     get_last_note_id,
     format_content
 )
-from ntbk.crud.pages import ensure_ntbk_page, read_page, list_pages
+from ntbk.crud.pages import (
+    empty_notebook,
+    ensure_ntbk_page,
+    input_page_or_bmk, 
+    read_page, 
+    list_pages,
+)
 
 @click.group()
 @click.pass_context
@@ -53,7 +60,7 @@ def note(ctx: click.Context, page):
 
     bmk = ctx.obj["bookmark"]
     
-    if not(page or bmk):
+    if empty_notebook(page=page, bmk_page=bmk):
         click.secho("\nno page found", bold=True, fg="red")
         raise click.UsageError("must create at least one page before creating notes!") 
     
@@ -97,15 +104,11 @@ def read(ctx: click.Context, page: str):
     
     bmk = ctx.obj["bookmark"]
 
-    if not(page or bmk):
+    if empty_notebook(page=page, bmk_page=bmk):
         click.secho("\npage not found!",fg="yellow",bold=True)
         raise click.UsageError("cannot read notes if there are no pages created!")
 
-    if page:
-        fpage = build_ntbk_path(page)
-    else:
-        fpage = build_ntbk_path(bmk)
-        page = read_bookmark()
+    page, fpage = input_page_or_bmk(page=page, bmk=bmk)
 
     if not(is_page_blank(fpage)):
         read_page(
@@ -121,6 +124,7 @@ def read(ctx: click.Context, page: str):
 @click.pass_context
 def summary(ctx: click.Context):
     """shows all pages, highlights the bookmarked page"""
+
     bmk = ctx.obj["bookmark"]
     pages = list_pages(NTBK_HOME)
     marker = "  "
@@ -135,13 +139,44 @@ def summary(ctx: click.Context):
     else:
         click.secho("\nempty summary, no pages found", fg="yellow", bold=True)
 
+@ntbk.command
+@click.pass_context
+@click.argument("note_id",required=True,nargs=1, type=click.INT)
+@click.option("--page",help="name of the page in which to delete the notes")
+def erase(ctx: click.Context, note_id: int, page: str):
+    """deletes the page note under the inputed note ID"""
 
-# @ntbk.command
-# @click.pass_context
-# def edit(ctx: click.Context, note_id: int):
-#     """rewrites an specific note"""
+    bmk = ctx.obj["bookmark"]
 
-# @ntbk.command
-# @click.pass_context
-# def erase(ctx: click.Context, note_id: int):
-#     """deletes an specific note"""
+    if empty_notebook(page=page,bmk_page=bmk):
+        click.secho("\npage not found!",fg="yellow",bold=True)
+        raise click.UsageError("cannot erase notes if there are no pages created!")
+    
+    page, fpage = input_page_or_bmk(page=page, bmk=bmk)
+
+    if is_page_blank(fpage=fpage):
+        click.secho(f"\nwhoops, {page} is a blank page",fg="yellow",bold=True)
+        raise click.UsageError("cannot erase notes if page is blank!")
+
+    try:
+        delete_note_by_id(note_id,fpage)
+    except Exception as e:
+        raise click.UsageError(f"cannot delete note because {e}")
+    else:
+        write_bookmark(page)
+
+
+
+    
+
+
+
+    
+
+
+
+    
+    
+
+
+
