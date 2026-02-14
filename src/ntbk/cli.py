@@ -18,6 +18,7 @@ from ntbk.crud.pages import (
     input_page_or_bmk, 
     read_page, 
     list_pages,
+    page_exists
 )
 
 @click.group()
@@ -64,12 +65,14 @@ def note(ctx: click.Context, page):
         click.secho("\nno page found", bold=True, fg="red")
         raise click.UsageError("must create at least one page before creating notes!") 
     
-    if page:
-         fpage = build_ntbk_path(page)
-         write_bookmark(page)
-         ctx.obj["bookmark"] = page
-    else:
-        fpage = build_ntbk_path(bmk)
+    page, fpage = input_page_or_bmk(page=page, bmk=bmk)
+
+    if not(page_exists(page)):
+        click.secho(f"\npage not found\n", fg="red", bold=True)
+        raise click.UsageError(f"unable to find page named {page}")
+
+    write_bookmark(page)
+    ctx.obj["bookmark"] = page
 
     note_id = 0 if is_page_blank(fpage) else get_last_note_id(fpage, SEPARATOR) + 1
 
@@ -153,6 +156,10 @@ def erase(ctx: click.Context, note_id: int, page: str):
         raise click.UsageError("cannot erase notes if there are no pages created!")
     
     page, fpage = input_page_or_bmk(page=page, bmk=bmk)
+
+    if not(page_exists(page)):
+        click.secho(f"\npage not found\n", fg="red", bold=True)
+        raise click.UsageError(f"unable to find page named {page}")
 
     if is_page_blank(fpage=fpage):
         click.secho(f"\nwhoops, {page} is a blank page",fg="yellow",bold=True)

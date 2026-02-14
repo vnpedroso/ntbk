@@ -1,5 +1,7 @@
 from pathlib import Path
 
+from ntbk.utils.constants import NTBK_HOME
+
 from ntbk.utils.utils import (
     build_ntbk_path,
     page_into_content_rows,
@@ -73,3 +75,14 @@ def input_page_or_bmk(page: str, bmk: str) -> tuple[str, Path]:
         return page, build_ntbk_path(page)
     
     return bmk, build_ntbk_path(bmk)
+
+def page_exists(page: str) -> bool:
+    """checks if page exists
+
+    Args:
+        page (str): name of the inputed page
+
+    Returns:
+        bool: True if page exists, False otherwise
+    """
+    return True if page in list_pages(NTBK_HOME) else False
