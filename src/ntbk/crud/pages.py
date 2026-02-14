@@ -1,6 +1,7 @@
 from pathlib import Path
+from filelock import FileLock   
 
-from ntbk.utils.constants import NTBK_HOME
+from ntbk.utils.constants import FILELOCK, NTBK_HOME
 
 from ntbk.utils.utils import (
     build_ntbk_path,
@@ -86,3 +87,21 @@ def page_exists(page: str) -> bool:
         bool: True if page exists, False otherwise
     """
     return True if page in list_pages(NTBK_HOME) else False
+
+def delete_page(page: str) -> bool:
+    """deletes a page file
+
+    Args:
+        page (str): name of the inputed page
+
+    Returns:
+        bool: True if the page was successfully deleted, False otherwise
+    """
+
+    fpage = build_ntbk_path(page)
+
+    with FileLock(FILELOCK):
+        fpage.unlink(missing_ok=False)
+        return True
+    
+    return False

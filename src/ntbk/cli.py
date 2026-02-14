@@ -13,6 +13,7 @@ from ntbk.crud.notes import (
     format_content
 )
 from ntbk.crud.pages import (
+    delete_page,
     empty_notebook,
     ensure_ntbk_page,
     input_page_or_bmk, 
@@ -178,9 +179,23 @@ def erase(ctx: click.Context, note_id: int, page: str):
     else:
         write_bookmark(page)
 
+@ntbk.command
+@click.pass_context
+@click.argument("page",required=True,nargs=1)
+def rip(ctx: click.Context, page: str):
+    """rips a page from the notebook"""
 
-
+    if not(page_exists(page)):
+        click.secho(f"\npage not found\n", fg="red", bold=True)
+        raise click.UsageError(f"unable to find page named {page}")
     
+    delete_page(page)
+
+    reset_bmk = list_pages(NTBK_HOME)[0]
+    write_bookmark(reset_bmk)
+
+    click.secho(f"\npage {page} successfully deleted", fg="green",bold=True)
+    return
 
 
 
