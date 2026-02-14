@@ -1,2 +1,5 @@
 # notebook
-: a book of plain paper or paper with lines, for writing on (but in your terminal). No dbs involved, just txt files.
+> : _a book of plain paper or paper with lines, for writing on_
+
+yeap, a notebook, but in your terminal.
+no dbs involved, just txt files.
