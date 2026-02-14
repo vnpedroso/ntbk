@@ -190,14 +190,15 @@ def rip(ctx: click.Context, page: str):
         raise click.UsageError(f"unable to find page named {page}")
     
     delete_page(page)
+    click.secho(f"\npage {page} successfully deleted", fg="green",bold=True)
 
     if pages_left := list_pages(NTBK_HOME):
         reset_bmk = pages_left[0]
         write_bookmark(reset_bmk)
-        click.secho(f"\npage {page} successfully deleted", fg="green",bold=True)
         return
 
     write_bookmark("")
+    return
 
 
 
