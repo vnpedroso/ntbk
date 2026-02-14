@@ -109,7 +109,7 @@ def read(ctx: click.Context, page: str):
     bmk = ctx.obj["bookmark"]
 
     if empty_notebook(page=page, bmk_page=bmk):
-        click.secho("\npage not found!",fg="yellow",bold=True)
+        click.secho("\npage not found!\n",fg="yellow",bold=True)
         raise click.UsageError("cannot read notes if there are no pages created!")
 
     page, fpage = input_page_or_bmk(page=page, bmk=bmk)
@@ -126,7 +126,7 @@ def read(ctx: click.Context, page: str):
         )
         return
     
-    click.secho(f"\nwhoops, {page} is a blank page",fg="yellow",bold=True)
+    click.secho(f"\nwhoops, {page} is a blank page\n",fg="yellow",bold=True)
 
 @ntbk.command
 @click.pass_context
@@ -145,7 +145,7 @@ def summary(ctx: click.Context):
             click.echo(f"\t{marker}{pg}")
             marker = "  "
     else:
-        click.secho("\nempty summary, no pages found", fg="yellow", bold=True)
+        click.secho("\nempty summary, no pages found\n", fg="yellow", bold=True)
 
 @ntbk.command
 @click.pass_context
@@ -157,7 +157,7 @@ def erase(ctx: click.Context, note_id: int, page: str):
     bmk = ctx.obj["bookmark"]
 
     if empty_notebook(page=page,bmk_page=bmk):
-        click.secho("\npage not found!",fg="yellow",bold=True)
+        click.secho("\npage not found!\n",fg="yellow",bold=True)
         raise click.UsageError("cannot erase notes if there are no pages created!")
     
     page, fpage = input_page_or_bmk(page=page, bmk=bmk)
@@ -167,15 +167,15 @@ def erase(ctx: click.Context, note_id: int, page: str):
         raise click.UsageError(f"unable to find page named {page}")
 
     if is_page_blank(fpage=fpage):
-        click.secho(f"\nwhoops, {page} is a blank page",fg="yellow",bold=True)
+        click.secho(f"\nwhoops, {page} is a blank page\n",fg="yellow",bold=True)
         raise click.UsageError("cannot erase notes if page is blank!")
 
     # remove this try except when all errors are actually mapped
     try:
         delete_note_by_id(note_id,fpage)
-        click.secho(f"\nnote with id {str(note_id)} deleted from page {page}")
+        click.secho(f"\nnote with id {str(note_id)} deleted from page {page}\n")
     except Exception as e:
-        raise click.UsageError(f"cannot delete note because {e}")
+        raise click.UsageError(e)
     else:
         write_bookmark(page)
 
@@ -191,11 +191,13 @@ def rip(ctx: click.Context, page: str):
     
     delete_page(page)
 
-    reset_bmk = list_pages(NTBK_HOME)[0]
-    write_bookmark(reset_bmk)
+    if pages_left := list_pages(NTBK_HOME):
+        reset_bmk = pages_left[0]
+        write_bookmark(reset_bmk)
+        click.secho(f"\npage {page} successfully deleted", fg="green",bold=True)
+        return
 
-    click.secho(f"\npage {page} successfully deleted", fg="green",bold=True)
-    return
+    write_bookmark("")
 
 
 

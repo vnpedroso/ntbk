@@ -37,7 +37,7 @@ def delete_note_by_id(note_id: int, fpage: Path) -> None:
     if check_id_match_index(note_id,lines):
         lines.pop(note_id)
     else: 
-        raise IndexError(f"note id {note_id} has no equivalent row")
+        raise IndexError(f"note with id {note_id} not found in this page")
     
     with FileLock(FILELOCK):
         with open(fpage, mode="w") as f:
