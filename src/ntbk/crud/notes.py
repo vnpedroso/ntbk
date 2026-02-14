@@ -7,14 +7,16 @@ from ntbk.utils.constants import FILELOCK, TIMESTAMP_FMT, SEPARATOR
 from ntbk.utils.utils import page_into_str_lines
 
 def check_id_match_index(note_id: int, lines: list[str]) -> bool:
-    """_summary_
+    """
+    checks if the provided note id is within the list of notes length
+    if yes, also checks if the note with the input id has the same value as index position
 
     Args:
-        note_id (int): _description_
-        liens (list[str]): _description_
+        note_id (int): the id inputed by the user
+        lines (list[str]): a list of 'lines', each a note on the page
 
     Returns:
-        bool: _description_
+        bool: True if all checks pass, False otherwise
     """
     if note_id <= len(lines):
         if note_id == int(lines[note_id].split(SEPARATOR)[0]):
@@ -23,14 +25,11 @@ def check_id_match_index(note_id: int, lines: list[str]) -> bool:
     return False
 
 def delete_note_by_id(note_id: int, fpage: Path) -> None:
-    """_summary_
+    """deletes a notebook note by its id
 
     Args:
-        note_id (int): _description_
-        fpage (Path): _description_
-
-    Returns:
-        _type_: _description_
+        note_id (int): the note id provided by the user
+        fpage (Path): full path to the page in question
     """
 
     lines = page_into_str_lines(fpage)
@@ -42,8 +41,10 @@ def delete_note_by_id(note_id: int, fpage: Path) -> None:
     
     with FileLock(FILELOCK):
         with open(fpage, mode="w") as f:
-            for li in lines:
-                f.write(li)
+            for idx, line in enumerate(lines):
+                note = line.split(SEPARATOR,1)[1]
+                new_line = str(idx) + SEPARATOR + note
+                f.write(new_line)
             return
 
 def write_note(note: str, overwrite: bool, fpage: Path) -> None:
