@@ -1,8 +1,6 @@
 from pathlib import Path
 
-from ntbk.utils.constants import HEADERS, NTBK_HOME, SEPARATOR
 from ntbk.utils.utils import (
-    treat_input,
     build_ntbk_path,
     page_into_content_rows,
     tabulate,

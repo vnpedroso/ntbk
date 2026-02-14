@@ -74,7 +74,7 @@ def note(ctx: click.Context, page):
     note_id = 0 if is_page_blank(fpage) else get_last_note_id(fpage, SEPARATOR) + 1
 
     if not is_within_id_limit(note_id,max_notes_on_page=PAGE_MAX_NOTES):
-        click.secho(f"\nmax number of notes reached!")
+        click.secho("\nmax number of notes reached!")
         raise click.ClickException(f"page {page} reached max number of {PAGE_MAX_NOTES} notes!")
 
     click.echo("Press ENTER to save note\n")

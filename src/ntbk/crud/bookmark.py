@@ -1,4 +1,3 @@
-from pathlib import Path
 
 from ntbk.utils.constants import BOOKMARK
 from ntbk.utils.utils import treat_input
