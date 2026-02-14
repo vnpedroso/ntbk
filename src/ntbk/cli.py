@@ -173,7 +173,7 @@ def erase(ctx: click.Context, note_id: int, page: str):
     # remove this try except when all errors are actually mapped
     try:
         delete_note_by_id(note_id,fpage)
-        click.secho(f"\nnote with id {str(note_id)} deleted from page {page}\n")
+        click.secho(f"\nnote with id {str(note_id)} deleted from page {page}\n", fg="green", bold=True)
     except Exception as e:
         raise click.UsageError(e)
     else:
