@@ -113,6 +113,10 @@ def read(ctx: click.Context, page: str):
 
     page, fpage = input_page_or_bmk(page=page, bmk=bmk)
 
+    if not(page_exists(page)):
+        click.secho(f"\npage not found\n", fg="red", bold=True)
+        raise click.UsageError(f"unable to find page named {page}")
+
     if not(is_page_blank(fpage)):
         read_page(
             fpage=fpage,
