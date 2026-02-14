@@ -62,7 +62,7 @@ def note(ctx: click.Context, page):
     bmk = ctx.obj["bookmark"]
     
     if empty_notebook(page=page, bmk_page=bmk):
-        click.secho("\nno page found", bold=True, fg="red")
+        click.secho("\nno page found\n", bold=True, fg="red")
         raise click.UsageError("must create at least one page before creating notes!") 
     
     page, fpage = input_page_or_bmk(page=page, bmk=bmk)
@@ -77,7 +77,7 @@ def note(ctx: click.Context, page):
     note_id = 0 if is_page_blank(fpage) else get_last_note_id(fpage, SEPARATOR) + 1
 
     if not is_within_id_limit(note_id,max_notes_on_page=PAGE_MAX_NOTES):
-        click.secho("\nmax number of notes reached!")
+        click.secho("\nmax number of notes reached!\n")
         raise click.ClickException(f"page {page} reached max number of {PAGE_MAX_NOTES} notes!")
 
     click.echo("Press ENTER to save note\n")
@@ -165,8 +165,10 @@ def erase(ctx: click.Context, note_id: int, page: str):
         click.secho(f"\nwhoops, {page} is a blank page",fg="yellow",bold=True)
         raise click.UsageError("cannot erase notes if page is blank!")
 
+    # remove this try except when all errors are actually mapped
     try:
         delete_note_by_id(note_id,fpage)
+        click.secho(f"\nnote with id {str(note_id)} deleted from page {page}")
     except Exception as e:
         raise click.UsageError(f"cannot delete note because {e}")
     else:
