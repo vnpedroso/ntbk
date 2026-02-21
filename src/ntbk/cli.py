@@ -152,7 +152,7 @@ def summary(ctx: click.Context):
 @click.argument("note_id",required=True,nargs=1, type=click.INT)
 @click.option("--page",help="name of the page in which to delete the notes")
 def erase(ctx: click.Context, note_id: int, page: str):
-    """deletes the page note under the inputed note ID"""
+    """deletes a note by ID"""
 
     bmk = ctx.obj["bookmark"]
 
@@ -199,15 +199,3 @@ def rip(ctx: click.Context, page: str):
 
     write_bookmark("")
     return
-
-
-
-    
-
-
-
-    
-    
-
-
-
