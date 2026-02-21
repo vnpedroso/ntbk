@@ -1,7 +1,7 @@
 import click
 
 from ntbk.utils.constants import HEADERS, NTBK_HOME, PAGE_MAX_NOTES, SEPARATOR
-from ntbk.utils.utils import build_ntbk_path, is_page_blank, is_within_char_limit
+from ntbk.utils.utils import is_page_blank, is_within_char_limit
 
 from ntbk.crud.bookmark import ensure_bookmark, read_bookmark, write_bookmark
 from ntbk.crud.home import ensure_ntbk_home
@@ -69,7 +69,7 @@ def note(ctx: click.Context, page):
     page, fpage = input_page_or_bmk(page=page, bmk=bmk)
 
     if not(page_exists(page)):
-        click.secho(f"\npage not found\n", fg="red", bold=True)
+        click.secho("\npage not found\n", fg="red", bold=True)
         raise click.UsageError(f"unable to find page named {page}")
 
     write_bookmark(page)
@@ -115,7 +115,7 @@ def read(ctx: click.Context, page: str):
     page, fpage = input_page_or_bmk(page=page, bmk=bmk)
 
     if not(page_exists(page)):
-        click.secho(f"\npage not found\n", fg="red", bold=True)
+        click.secho("\npage not found\n", fg="red", bold=True)
         raise click.UsageError(f"unable to find page named {page}")
 
     if not(is_page_blank(fpage)):
@@ -163,7 +163,7 @@ def erase(ctx: click.Context, note_id: int, page: str):
     page, fpage = input_page_or_bmk(page=page, bmk=bmk)
 
     if not(page_exists(page)):
-        click.secho(f"\npage not found\n", fg="red", bold=True)
+        click.secho("\npage not found\n", fg="red", bold=True)
         raise click.UsageError(f"unable to find page named {page}")
 
     if is_page_blank(fpage=fpage):
@@ -186,7 +186,7 @@ def rip(ctx: click.Context, page: str):
     """rips a page from the notebook"""
 
     if not(page_exists(page)):
-        click.secho(f"\npage not found\n", fg="red", bold=True)
+        click.secho("\npage not found\n", fg="red", bold=True)
         raise click.UsageError(f"unable to find page named {page}")
     
     delete_page(page)
