@@ -7,6 +7,7 @@ from ntbk.crud.bookmark import ensure_bookmark, read_bookmark, write_bookmark
 from ntbk.crud.home import ensure_ntbk_home
 from ntbk.crud.notes import (
     delete_note_by_id,
+    edit_note_by_id,
     is_within_id_limit,
     write_note, 
     get_last_note_id,
@@ -147,10 +148,49 @@ def summary(ctx: click.Context):
     else:
         click.secho("\nempty summary, no pages found\n", fg="yellow", bold=True)
 
+
 @ntbk.command
 @click.pass_context
 @click.argument("note_id",required=True,nargs=1, type=click.INT)
-@click.option("--page",help="name of the page in which to delete the notes")
+@click.option("--page",help="name of the page in which to edit the note")
+def edit(ctx: click.Context, note_id: int, page: str):
+    """edits a note given its ID"""
+
+    bmk = ctx.obj["bookmark"]
+
+    if empty_notebook(page=page,bmk_page=bmk):
+        click.secho("\npage not found!\n",fg="yellow",bold=True)
+        raise click.UsageError("cannot edit notes if there are no pages created!")
+    
+    page, fpage = input_page_or_bmk(page=page, bmk=bmk)
+
+    if not(page_exists(page)):
+        click.secho("\npage not found\n", fg="red", bold=True)
+        raise click.UsageError(f"unable to find page named {page}")
+
+    if is_page_blank(fpage=fpage):
+        click.secho(f"\nwhoops, {page} is a blank page\n",fg="yellow",bold=True)
+        raise click.UsageError("cannot edit a note if page is blank!")
+    
+    content = click.prompt("",prompt_suffix=">> ")
+    if not is_within_char_limit(content):
+        click.secho("\n144 character limit exceeded!", bold=True, fg="red")
+        raise click.UsageError(f"current note has {len(content)} characters, limit is 144")
+
+    # remove this try except when all errors are actually mapped
+    try:
+        edit_note_by_id(note_id,fpage,content)
+        click.secho(f"\nnote with id {str(note_id)} edited in page {page}\n", fg="green", bold=True)
+    except Exception as e:
+        raise click.UsageError(e)
+    else:
+        write_bookmark(page)
+
+
+@ntbk.command
+@click.pass_context
+@click.argument("note_id",required=True,nargs=1, type=click.INT)
+@click.option("--page",help="name of the page in which to delete the note")
 def erase(ctx: click.Context, note_id: int, page: str):
     """deletes a note by ID"""
 
