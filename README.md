@@ -89,6 +89,6 @@ A detailed guide of the tool's commands
 
 ## next steps
 
-* create the `edit` commands
-* finish this README
-* add tests
+- [x] create the `edit` commands
+- [ ] finish this README
+- [ ] add tests &emsp; 
