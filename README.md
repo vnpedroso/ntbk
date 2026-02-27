@@ -26,6 +26,7 @@ Options:
   --help  Show this message and exit.
 
 Commands:
+  edit     edits a note given its ID
   erase    deletes a note by ID
   new      ntbk new page: creates a new page ntbk new note: creates a new...
   read     read all notes in the specified page, uses bookmark if no page...
