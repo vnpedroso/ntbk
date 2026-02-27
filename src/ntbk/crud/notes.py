@@ -24,6 +24,34 @@ def check_id_match_index(note_id: int, lines: list[str]) -> bool:
     
     return False
 
+def edit_note_by_id(note_id: int, fpage: Path, new_content: str) -> None:
+
+    lines = page_into_str_lines(fpage)
+
+    if not (check_id_match_index(note_id, lines)):
+        raise IndexError(f"note with id {note_id} not found in this page")
+        
+    with FileLock(FILELOCK):
+        with open(fpage, mode="w") as f:
+            for idx, line in enumerate(lines):
+
+                if idx == note_id:
+                    create = line.split(SEPARATOR)[1]
+                    mod = datetime.now().strftime(TIMESTAMP_FMT)
+                    new_line = f"{str(note_id)}{SEPARATOR}{create}{SEPARATOR}{mod}{SEPARATOR}{new_content}\n"
+                else:
+                    new_line = line
+
+                if idx == len(lines) - 1:
+                    f.write(new_line.replace("\n",""))
+                else:
+                    f.write(new_line)
+                    
+            return
+
+
+    return 
+
 def delete_note_by_id(note_id: int, fpage: Path) -> None:
     """deletes a notebook note by its id
 
