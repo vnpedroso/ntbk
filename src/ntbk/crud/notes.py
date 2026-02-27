@@ -46,7 +46,7 @@ def delete_note_by_id(note_id: int, fpage: Path) -> None:
                 if idx == len(lines) - 1:
                     new_line = str(idx) + SEPARATOR + note.replace("\n","")
                 else:
-                    new_line = str(idx) + SEPARATOR + note.replace
+                    new_line = str(idx) + SEPARATOR + note
                 f.write(new_line)
             return
 
